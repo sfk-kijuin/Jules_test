@@ -1,11 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
     const resetButton = document.getElementById('reset-button');
+    const timerDisplay = document.getElementById('timer');
     const symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     let cards = [];
     let flippedCards = [];
     let matchedPairs = 0;
     let lockBoard = false;
+    let timerInterval = null;
+    let startTime = null;
+    let gameStarted = false;
 
     function initializeGame() {
         gameBoard.innerHTML = '';
@@ -13,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
         flippedCards = [];
         matchedPairs = 0;
         lockBoard = false;
+        gameStarted = false;
+        clearInterval(timerInterval);
+        timerDisplay.textContent = 'Time: 0s';
 
         const cardSymbols = [...symbols, ...symbols];
         cardSymbols.sort(() => 0.5 - Math.random());
@@ -22,6 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBoard.appendChild(card);
             cards.push(card);
         });
+    }
+
+    function startTimer() {
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        timerDisplay.textContent = `Time: ${elapsedTime}s`;
     }
 
     function createCard(symbol) {
@@ -48,6 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function flipCard() {
+        if (!gameStarted) {
+            gameStarted = true;
+            startTimer();
+        }
+
         if (lockBoard || this === flippedCards[0] || this.classList.contains('flipped')) {
             return;
         }
@@ -68,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             disableCards();
             matchedPairs++;
             if (matchedPairs === symbols.length) {
+                clearInterval(timerInterval);
                 setTimeout(() => alert('You won!'), 500);
             }
         } else {

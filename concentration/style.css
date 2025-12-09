@@ -6,6 +6,18 @@
     margin-top: 20px;
 }
 
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 460px;
+    margin: 0 auto 20px;
+}
+
+#timer {
+    font-size: 1.2em;
+}
+
 .card {
     width: 100px;
     height: 100px;
